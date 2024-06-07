@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WaveHack ALPHA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main">
+    <div class="welcome">
+      <div class="container">
+        <div class="name">
+          <img src="imgs/luckyjet.svg" id="namesvg"></img>
+        </div>
+          <div class="circle">
+            <img id="waitsvg" src="imgs/lucky.svg" alt="SVG Image" class="svg-image">
+            <img id="forpredict" src="imgs/jet.webp" alt="Result Image" class="svg-image2" style="display: none;">
+            <p class="waitlabel" id="result-text">Waiting...</p>
+          </div>
+          
+            <button class="button" onclick="fetchPrediction()">NEXT X</button>
+        <div class="tmebtn">
+          <script type="text/javascript">(function() {var script=document.createElement("script");script.type="text/javascript";script.async =true;script.src="//telegram.im/widget-button/index.php?id=@WaveHackTM";document.getElementsByTagName("head")[0].appendChild(script);})();</script>
+          <a href="https://t.me/WaveHackTM" target="_blank" class="telegramim_button telegramim_shadow telegramim_pulse" style="font-size:20px;width:303px;background:#27A5E7;box-shadow:1px 1px 5px #27A5E7;display:block;margin:0 auto;color:#FFFFFF;border-radius:66px;" title=""><i></i> OUR TELEGRAM</a>
+        </div>
+        <div class="tgname">
+          <p class="tglbl">t.me/WaveHackTM</p>
+        </div>
+        
+        </div>
+      </div>
+    </div>
+
+
+    
+  
+
+
+  
+  
+  <script src="main.js"></script>
+  <script>
+    
+    async function fetchPrediction() {
+      
+      const waitSvg = document.getElementById('waitsvg');
+      const forPredict = document.getElementById('forpredict');
+      const resultText = document.getElementById('result-text');
+      
+
+      if (resultText.textContent !== 'Waiting...') {
+        resultText.textContent = 'Waiting...';
+        resultText.style.color = 'white';
+        resultText.style.fontSize = '24px';
+        resultText.classList.remove('pulse');
+        forPredict.style.display = 'none';
+        waitSvg.style.display = 'block';
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/predict', { method: 'POST' });
+        const data = await response.json();
+
+        if (response.ok) {
+          const result = parseFloat(data.result).toFixed(2);
+          //const confidence = parseFloat(data.confidence).toFixed(2);
+
+          waitSvg.style.display = 'none';
+          forPredict.style.display = 'block';
+          if (result < 0.00) {
+            resultText.textContent = 'SKIP';
+            resultText.style.color = 'red';
+          } else if (result >= 1.00 && result <= 2.00) {
+            resultText.textContent = `X ${result}`;
+            resultText.style.color = '#3e5bc2';
+          } else if (result >= 2.00 && result <= 9.99) {
+            resultText.textContent = `X ${result}`;
+            resultText.style.color = '#753ec2';
+          } else if (result >= 10.00) {
+            resultText.textContent = `X ${result}`;
+            resultText.style.color = '#de8b03';
+          }
+
+          
+          resultText.style.fontSize = '32px';
+          resultText.classList.add('pulse');
+        } else {
+          resultText.textContent = `Error`;
+        }
+      } catch (error) {
+        resultText.textContent = `Error`;
+      }
+
+    }
+
+    
+  </script>
+  
+</body>
+</html>
